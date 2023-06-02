@@ -6,15 +6,21 @@
   "author": "Biometrio.earth <biometrio.earth@.org> (https://biometrio.earth.org)",
   "dependencies": {
     "@apollo/client": "^3.7.15",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/typography": "^0.5.9",
     "apollo-boost": "^0.4.9",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-link-ws": "^1.0.20",
+    "autoprefixer": "^10.4.14",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
+    "postcss": "^8.4.24",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",
     "react-scripts": "5.0.1",
+    "tailwindcss-children": "^2.1.0",
     "web-vitals": "^2.1.0"
   },
   "scripts": {

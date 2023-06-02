@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&display=swap');
+
+@font-face {
+    font-family: Made tommy;
+    src: url('../fonts/made_tommy/MADETOMMYRegular.otf') format('opentype'),
+         url('../fonts/made_tommy/MADETOMMYMedium.otf') format('opentype'),
+         url('../fonts/made_tommy/MADETOMMYBold.otf') format('opentype');
+  }
+
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+    font-family: 'Cormorant Garamond', serif;
+}
+
+
+body {
+    font-family: Made tommy, sans-serif;
+}
+
+p {
+    font-family: Made tommy, sans-serif;
+}
+
+label{
+    font-family: Made tommy, sans-serif;
+}

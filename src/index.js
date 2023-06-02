@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from "react-router-dom";
+import './assets/css/tailwind.css';
+import './assets/css/index.css';
 import { ApolloProvider } from '@apollo/client/react';
 import client  from './lib/useClient';
 

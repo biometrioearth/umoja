@@ -1,13 +1,16 @@
 
 import React from 'react';
-import StartPage from './components/StartPage';
 import { Route, Routes } from "react-router-dom";
+
+import Login from "./modules/Auth/Login/Index"
+import Dashboard from "./modules/Dashboard/Index";
 
 function App() {
   return (
     <div >
       <Routes>
-        <Route path="/" element={<StartPage/>} />
+        <Route path="/" element={<Login/>} />
+        <Route path="/dashboard" element={<Dashboard/>} />
       </Routes>
     </div>
   );
