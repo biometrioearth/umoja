@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "SiPeCaM",
+    "shortname": "sipecam",
+    "description": "Project to filter useful images for animal classification models",
+    "country": "Mexico",
+    "siteSet": 12,
+    "dateCreated": "06/06/2023"
+  },
+  {
+    "id": 2,
+    "title": "Image filter for plant classification",
+    "shortname": "plant",
+    "description": "Project to filter useful images for plant classification models",
+    "country": "Germany",
+    "siteSet": 5,
+    "dateCreated": "06/06/2023"
+  },
+  {
+    "id": 3,
+    "title": "SiPeCaM",
+    "shortname": "sipecam",
+    "description": "Project to filter useful images for animal classification models",
+    "country": "Niger",
+    "siteSet": 15,
+    "dateCreated": "06/06/2023"
+  },
+  {
+    "id": 4,
+    "title": "SiPeCaM",
+    "shortname": "sipecam",
+    "description": "Project to filter useful images for animal classification models",
+    "country": "Serval",
+    "siteSet": 65,
+    "dateCreated": "06/06/2023"
+  }
+]

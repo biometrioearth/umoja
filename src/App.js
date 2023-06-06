@@ -1,18 +1,71 @@
+import React, { useEffect, useState, lazy } from 'react';
+import { Provider, useSelector } from 'react-redux';
+import './static/css/style.css';
+import { ThemeProvider } from 'styled-components';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
+import { ConfigProvider } from 'antd';
+import store from './redux/store';
+import Admin from './routes/admin';
+import Auth from './routes/auth';
+import config from './config/config';
+import ProtectedRoute from './components/utilities/protectedRoute';
+import 'antd/dist/antd.less';
 
-import React from 'react';
-import { Route, Routes } from "react-router-dom";
+const NotFound = lazy(() => import('./container/pages/404'));
 
-import Login from "./modules/Auth/Login/Index"
-import Dashboard from "./modules/Dashboard/Index";
+const { theme } = config;
+
+function ProviderConfig() {
+  const { rtl, isLoggedIn, topMenu, mainContent } = useSelector((state) => {
+    return {
+      rtl: false,
+      topMenu: false,
+      mainContent: 'lightMode',
+      isLoggedIn: state.auth.login,
+    };
+  });
+
+  const [path, setPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    let unmounted = false;
+    if (!unmounted) {
+      setPath(window.location.pathname);
+    }
+    // eslint-disable-next-line no-return-assign
+    return () => (unmounted = true);
+  }, [setPath]);
+
+  return (
+    <ConfigProvider direction="ltr">
+      <ThemeProvider theme={{ ...theme, rtl, topMenu, mainContent }}>
+        <Router basename={process.env.PUBLIC_URL}>
+          {!isLoggedIn ? (
+            <Routes>
+              <Route path="/*" element={<Auth />} />{' '}
+            </Routes>
+          ) : (
+            <Routes>
+              <Route path="/dashboard/*" element={<ProtectedRoute path="/*" Component={Admin} />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          )}
+          {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" />} />
+            </Routes>
+          )}
+        </Router>
+      </ThemeProvider>
+    </ConfigProvider>
+  );
+}
 
 function App() {
   return (
-    <div >
-      <Routes>
-        <Route path="/" element={<Login/>} />
-        <Route path="/dashboard" element={<Dashboard/>} />
-      </Routes>
-    </div>
+    <Provider store={store}>
+      <ProviderConfig />
+    </Provider>
   );
 }
 
