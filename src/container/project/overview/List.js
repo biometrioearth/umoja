@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Table, Progress, Pagination, Tag } from 'antd';
+import { Row, Col, Table, Pagination } from 'antd';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import UilEllipsisH from '@iconscout/react-unicons/icons/uil-ellipsis-h';
@@ -37,93 +37,22 @@ function ProjectLists() {
 
   if (projects.length)
     projects.map((value) => {
-      const { id, title, status, category, percentage } = value;
+      const { id, title, shortname, country, siteSet, dateCreated } = value;
       return dataSource.push({
         key: id,
-        project: (
+        title: (
           <>
             <Heading as="h4" className="mb-[5px] text-dark dark:text-white87 text-[15px] font-medium">
-              <Link to={`/admin/project/projectDetails/${id}`} className="text-dark dark:text-white87">
+              <Link to={`/dashboard/project/projectDetails/${id}`} className="text-dark dark:text-white87">
                 {title}
               </Link>
             </Heading>
-            <p className="mb-0 text-xs text-body dark:text-white60">{category}</p>
           </>
         ),
-        startDate: <span className="text-body dark:text-white60 text-[15px] font-medium">26 Dec 2019</span>,
-        deadline: <span className="text-body dark:text-white60 text-[15px] font-medium">18 Mar 2020</span>,
-        assigned: (
-          <>
-            <ul className="flex items-center -m-[3px] p-0 gap-[3px]">
-              <li>
-                <img
-                  className="w-[35px] min-w-[35px] h-[35px] rounded-full"
-                  src={require(`../../../static/img/users/1.png`)}
-                  alt=""
-                />
-              </li>
-              <li>
-                <img
-                  className="w-[35px] min-w-[35px] h-[35px] rounded-full"
-                  src={require(`../../../static/img/users/2.png`)}
-                  alt=""
-                />
-              </li>
-              <li>
-                <img
-                  className="w-[35px] min-w-[35px] h-[35px] rounded-full"
-                  src={require(`../../../static/img/users/3.png`)}
-                  alt=""
-                />
-              </li>
-              <li>
-                <img
-                  className="w-[35px] min-w-[35px] h-[35px] rounded-full"
-                  src={require(`../../../static/img/users/4.png`)}
-                  alt=""
-                />
-              </li>
-              <li>
-                <img
-                  className="w-[35px] min-w-[35px] h-[35px] rounded-full"
-                  src={require(`../../../static/img/users/5.png`)}
-                  alt=""
-                />
-              </li>
-              <li>
-                <img
-                  className="w-[35px] min-w-[35px] h-[35px] rounded-full"
-                  src={require(`../../../static/img/users/6.png`)}
-                  alt=""
-                />
-              </li>
-              <li>
-                <img
-                  className="w-[35px] min-w-[35px] h-[35px] rounded-full"
-                  src={require(`../../../static/img/users/7.png`)}
-                  alt=""
-                />
-              </li>
-            </ul>
-          </>
-        ),
-        status: (
-          <Tag
-            className={`inline-flex items-center justify-center bg-${status} text-white dark:text-white87 min-h-[18px] px-3 text-[10px] uppercase font-semibold border-none rounded-1`}
-          >
-            {status}
-          </Tag>
-        ),
-        completion: (
-          <>
-            <Progress
-              percent={status === 'complete' ? 100 : percentage}
-              strokeWidth={5}
-              className="inline-flex items-center text-sm text-body dark:text-white60 [&>.ant-progress-text]:text-body dark:[&>.ant-progress-text]:text-white60"
-            />
-            <p className="mt-1 text-body dark:text-white60 text-[13px]">12/15 Task Completed</p>
-          </>
-        ),
+        shortname: <span className="text-body dark:text-white60 text-[15px] font-medium">{shortname}</span>,
+        country: <span className="text-body dark:text-white60 text-[15px] font-medium">{country}</span>,
+        siteSet: <span className="text-body dark:text-white60 text-[15px] font-medium">{siteSet}</span>,
+        createdAt: <span className="text-body dark:text-white60 text-[15px] font-medium">{dateCreated}</span>,
         action: (
           <Dropdown
             className="min-w-[140px]"
@@ -160,42 +89,35 @@ function ProjectLists() {
 
   const columns = [
     {
-      title: 'Project',
-      dataIndex: 'project',
-      key: 'project',
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
       className: 'text-light dark:text-white60 text-[15px] py-2.5 last:text-end border-none before:hidden',
     },
     {
-      title: 'Start Date',
-      dataIndex: 'startDate',
-      key: 'startDate',
+      title: 'Short Name',
+      dataIndex: 'shortname',
+      key: 'shortname',
       className: 'text-light dark:text-white60 text-[15px] py-2.5 last:text-end border-none before:hidden',
     },
     {
-      title: 'Deadline',
-      dataIndex: 'deadline',
-      key: 'deadline',
+      title: 'Country',
+      dataIndex: 'country',
+      key: 'country',
       className: 'text-light dark:text-white60 text-[15px] last:text-end border-none before:hidden',
     },
     {
-      title: 'Assigned To',
-      dataIndex: 'assigned',
-      key: 'assigned',
+      title: 'Site Set',
+      dataIndex: 'siteSet',
+      key: 'siteSet',
       className: 'text-light dark:text-white60 text-[15px] last:text-end border-none before:hidden',
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: 'Date Created',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       className: 'text-light dark:text-white60 text-[15px] last:text-end border-none before:hidden',
     },
-    {
-      title: 'Completion',
-      dataIndex: 'completion',
-      key: 'completion',
-      className: 'text-light dark:text-white60 text-[15px] last:text-end border-none before:hidden',
-    },
-
     {
       title: '',
       dataIndex: 'action',

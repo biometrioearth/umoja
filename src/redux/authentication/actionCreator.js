@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 import actions from './actions';
-import { DataService } from '../../config/dataService/dataService';
 
 const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr } = actions;
 
@@ -8,33 +7,40 @@ const login = (values, callback) => {
   return async (dispatch) => {
     dispatch(loginBegin());
     try {
-      const response = await DataService.post('/login', values);
-      if (response.data.errors) {
-        dispatch(loginErr(response.data.errors));
+      // Call the mutation function with the form values
+      const response = await fetch(process.env.REACT_APP_BALAM_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `mutation {
+                tokenAuth(
+                    username: "${values.email}",
+                    password: "${values.password}"
+                ) {
+                    token
+                }
+            }`,
+        }),
+      });
+      // Handle success case
+      // ...
+
+      const data = await response.json();
+      if (data && data.errors) {
+        // Handle error messages
+        dispatch(loginErr(data.errors));
       } else {
-        Cookies.set('access_token', response.data.data.token);
+        localStorage.setItem('authData', data.data.tokenAuth.token);
+        Cookies.set('access_token', data.data.tokenAuth.token);
         Cookies.set('logedIn', true);
         dispatch(loginSuccess(true));
         callback();
       }
-    } catch (err) {
-      dispatch(loginErr(err));
-    }
-  };
-};
-
-const register = (values) => {
-  return async (dispatch) => {
-    dispatch(loginBegin());
-    try {
-      const response = await DataService.post('/register', values);
-      if (response.data.errors) {
-        dispatch(loginErr('Registration failed!'));
-      } else {
-        dispatch(loginSuccess(false));
-      }
-    } catch (err) {
-      dispatch(loginErr(err));
+    } catch (error) {
+      // Handle error case
+      dispatch(loginErr(error));
     }
   };
 };
@@ -45,6 +51,7 @@ const logOut = (callback) => {
     try {
       Cookies.remove('logedIn');
       Cookies.remove('access_token');
+      localStorage.removeItem('authData');
       dispatch(logoutSuccess(false));
       callback();
     } catch (err) {
@@ -53,4 +60,4 @@ const logOut = (callback) => {
   };
 };
 
-export { login, logOut, register };
+export { login, logOut, loginErr, loginSuccess };

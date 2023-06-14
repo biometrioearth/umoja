@@ -7,7 +7,7 @@ import CreateProject from './overview/CreateProject';
 import Heading from '../../components/heading/heading';
 import { AutoComplete } from '../../components/autoComplete/autoComplete';
 import { Button } from '../../components/buttons/buttons';
-import { filterProjectByStatus, sortingProjectByCategory } from '../../redux/project/actionCreator';
+import { sortingProjectByCategory } from '../../redux/project/actionCreator';
 
 const Grid = lazy(() => import('./overview/Grid'));
 const List = lazy(() => import('./overview/List'));
@@ -36,14 +36,6 @@ function Project() {
 
   const onSorting = (selectedItems) => {
     dispatch(sortingProjectByCategory(selectedItems));
-  };
-
-  const onChangeCategory = (value) => {
-    setState({
-      ...state,
-      categoryActive: value,
-    });
-    dispatch(filterProjectByStatus(value));
   };
 
   const showModal = () => {
@@ -85,77 +77,8 @@ function Project() {
       <main className="min-h-[715px] lg:min-h-[580px] bg-transparent px-[30px] ssm:px-[15px]  pb-[20px]">
         <Row gutter={25}>
           <Col xs={24}>
-            <div className="flex items-center w-full mb-[25px] flex-wrap justify-between 3xl:justify-center gap-[15px]">
+            <div className="flex items-center w-full mb-[25px] flex-wrap justify-between">
               <div className="flex items-center flex-wrap gap-[20px]  lg:justify-center">
-                <nav className="bg-white dark:bg-white10 px-5 py-[9px] rounded-[5px]">
-                  <ul className="flex flex-wrap items-center mb-0 gap-[12px]">
-                    <li className="ltr:border-r rtl:border-l ltr:pr-3 rtl:pl-3 dark:border-white10 last:border-none">
-                      <Link
-                        onClick={() => onChangeCategory('all')}
-                        to="#"
-                        className={
-                          state.categoryActive === 'all'
-                            ? 'text-primary dark:text-white87'
-                            : 'text-light dark:text-white60'
-                        }
-                      >
-                        All
-                      </Link>
-                    </li>
-                    <li className="ltr:border-r rtl:border-l ltr:pr-3 rtl:pl-3 dark:border-white10 last:border-none">
-                      <Link
-                        onClick={() => onChangeCategory('progress')}
-                        to="#"
-                        className={
-                          state.categoryActive === 'progress'
-                            ? 'text-primary dark:text-white87'
-                            : 'text-light dark:text-white60'
-                        }
-                      >
-                        In Progress
-                      </Link>
-                    </li>
-                    <li className="ltr:border-r rtl:border-l ltr:pr-3 rtl:pl-3 dark:border-white10 last:border-none">
-                      <Link
-                        onClick={() => onChangeCategory('complete')}
-                        to="#"
-                        className={
-                          state.categoryActive === 'complete'
-                            ? 'text-primary dark:text-white87'
-                            : 'text-light dark:text-white60'
-                        }
-                      >
-                        Complete
-                      </Link>
-                    </li>
-                    <li className="ltr:border-r rtl:border-l ltr:pr-3 rtl:pl-3 dark:border-white10 last:border-none">
-                      <Link
-                        onClick={() => onChangeCategory('late')}
-                        to="#"
-                        className={
-                          state.categoryActive === 'late'
-                            ? 'text-primary dark:text-white87'
-                            : 'text-light dark:text-white60'
-                        }
-                      >
-                        Late
-                      </Link>
-                    </li>
-                    <li className="ltr:border-r rtl:border-l ltr:pr-3 rtl:pl-3 dark:border-white10 last:border-none">
-                      <Link
-                        onClick={() => onChangeCategory('early')}
-                        to="#"
-                        className={
-                          state.categoryActive === 'early'
-                            ? 'text-primary dark:text-white87'
-                            : 'text-light dark:text-white60'
-                        }
-                      >
-                        Early
-                      </Link>
-                    </li>
-                  </ul>
-                </nav>
                 <div className="min-3xl:[&>div.ant-select]:w-[350px] ssm:[&>div.ant-select]:w-full [&>div>div.ant-select-selector]:border-0">
                   <AutoComplete onSearch={handleSearch} dataSource={notData} placeholder="Search projects" patterns />
                 </div>
@@ -168,11 +91,9 @@ function Project() {
                     defaultValue="category"
                     className="min-w-[260px] ltr:ml-[5px] rtl:mr-[5px] [&>div.ant-select-selector]:border-none [&>div>span.ant-select-selection-item]:text-body dark:[&>div>span.ant-select-selection-item]:text-white60 dark:text-white60 [&>span>span>svg]:text-body dark:[&>span>span>svg]:text-white60 "
                   >
-                    <Select.Option value="category">Project Category</Select.Option>
-                    <Select.Option value="rate">Top Rated</Select.Option>
-                    <Select.Option value="popular">Popular</Select.Option>
-                    <Select.Option value="time">Newest</Select.Option>
-                    <Select.Option value="price">Price</Select.Option>
+                    <Select.Option value="category">Country</Select.Option>
+                    <Select.Option value="rate">Germany</Select.Option>
+                    <Select.Option value="popular">Mexico</Select.Option>
                   </Select>
                 </div>
               </div>

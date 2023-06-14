@@ -63,37 +63,48 @@ function MenuItems({ toggleCollapsed }) {
       'Putter Fish',
       !topMenu && <UilArrowGrowth />,
     ),
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/project/view/list`}>
+        {t('project')}
+      </NavLink>,
+      'project',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/project/view/list`}>
+          <UilBagAlt />
+        </NavLink>
+      ),
+    ),
 
-    getItem(t('project'), 'project', !topMenu && <UilBagAlt />, [
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={`${path}/project/site/sites`}>
-          Sites
-        </NavLink>,
-        'Sites',
-        null,
-      ),
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={`${path}/project/sampling-area/sampling-areas`}>
-          Sampling Areas
-        </NavLink>,
-        'Sampling Areas',
-        null,
-      ),
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={`${path}/project/sampling-point/sampling-points`}>
-          Sampling Points
-        </NavLink>,
-        'Sampling Points',
-        null,
-      ),
-      // getItem(
-      //   <NavLink onClick={toggleCollapsed} to={`${path}/project/projectDetails/1/tasklist`}>
-      //     {t('project')} {t('details')}
-      //   </NavLink>,
-      //   'projectDetails',
-      //   null,
-      // ),
-    ]),
+    // getItem(t('project'), 'project', !topMenu && <UilBagAlt />, [
+    //   getItem(
+    //     <NavLink onClick={toggleCollapsed} to={`${path}/project/site/sites`}>
+    //       Sites
+    //     </NavLink>,
+    //     'Sites',
+    //     null,
+    //   ),
+    //   getItem(
+    //     <NavLink onClick={toggleCollapsed} to={`${path}/project/sampling-area/sampling-areas`}>
+    //       Sampling Areas
+    //     </NavLink>,
+    //     'Sampling Areas',
+    //     null,
+    //   ),
+    //   getItem(
+    //     <NavLink onClick={toggleCollapsed} to={`${path}/project/sampling-point/sampling-points`}>
+    //       Sampling Points
+    //     </NavLink>,
+    //     'Sampling Points',
+    //     null,
+    //   ),
+    //   // getItem(
+    //   //   <NavLink onClick={toggleCollapsed} to={`${path}/project/projectDetails/1/tasklist`}>
+    //   //     {t('project')} {t('details')}
+    //   //   </NavLink>,
+    //   //   'projectDetails',
+    //   //   null,
+    //   // ),
+    // ]),
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/pages/settings`}>
         {t('settings')}
