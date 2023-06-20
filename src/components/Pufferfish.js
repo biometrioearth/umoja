@@ -1,17 +1,16 @@
 import React, { Suspense } from 'react';
 
 // eslint-disable-next-line import/no-unresolved
-const App1 = React.lazy(() => import('pufferfishclient/App'));
+const RemotePufferfish = React.lazy(() => import('pufferfishclient/App'));
 
-function Test() {
+function Pufferfish() {
   return (
-    <div className="App">
-      Host Application
+    <div>
       <Suspense fallback="Loading...">
-        <App1 />
+        <RemotePufferfish />
       </Suspense>
     </div>
   );
 }
 
-export default Test;
+export default Pufferfish;
