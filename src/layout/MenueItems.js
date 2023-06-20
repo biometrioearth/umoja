@@ -57,10 +57,10 @@ function MenuItems({ toggleCollapsed }) {
       !topMenu && <UilCreateDashboard />,
     ),
     getItem(
-      <NavLink onClick={toggleCollapsed} to={`${path}`}>
-        Putter Fish
+      <NavLink onClick={toggleCollapsed} to={`${path}/pufferfish`}>
+        Pufferfish
       </NavLink>,
-      'Putter Fish',
+      'PufferFish',
       !topMenu && <UilArrowGrowth />,
     ),
     getItem(

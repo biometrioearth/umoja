@@ -30,7 +30,7 @@ function SignIn({ error }) {
 
   useEffect(() => {
     if (error !== null) {
-      setShowMessage(error[0].message);
+      setShowMessage(error.message);
       setShowErrorAlert(true);
       return () => {
         setShowErrorAlert(false);
