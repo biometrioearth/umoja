@@ -10,11 +10,13 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
+import { ToastContainer } from 'react-toastify';
 import MenueItems from './MenueItems';
 import { FooterStyle, LayoutContainer, SmallScreenAuthInfo, TopMenuSearch } from './Style';
 import Search from '../components/utilities/auth-info/Search';
 import AuthInfo from '../components/utilities/auth-info/info';
 import { ReactComponent as MySVG } from '../static/img/icon/left-bar.svg';
+import 'react-toastify/dist/ReactToastify.css';
 
 const { theme } = require('../config/theme/themeVariables');
 
@@ -202,6 +204,7 @@ const ThemeLayout = (WrappedComponent) => {
               ) : null}
               <Layout className="atbd-main-layout">
                 <Content>
+                  <ToastContainer />
                   <WrappedComponent {...this.props} />
                   <FooterStyle className="bg-white dark:bg-[#1B1E2B]">
                     <Row>

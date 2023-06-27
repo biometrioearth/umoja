@@ -1,5 +1,7 @@
 import { Spin } from 'antd';
 import React, { Suspense } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AuthLayout = (WraperContent) => {
   return function () {
@@ -11,7 +13,7 @@ const AuthLayout = (WraperContent) => {
           </div>
         }
       >
-        <div className="bg-top bg-no-repeat bg-warning">
+        <div className="bg-warning sticky top-0 h-full xl:h-full 2xl:h-screen">
           <div className="py-[20px] 2xl:py-[60px] px-[15px]">
             <div className="flex justify-center">
               <img
@@ -20,6 +22,7 @@ const AuthLayout = (WraperContent) => {
                 alt=""
               />
             </div>
+            <ToastContainer />
             <WraperContent />
           </div>
         </div>

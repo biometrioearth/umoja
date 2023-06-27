@@ -1204,3 +1204,9 @@ hr{
 .ant-alert-close-icon .anticon-close{
   @apply dark:text-white60 dark:hover:text-white87;
 }
+
+/* App CUSTOM CSS */
+
+/* .Toastify__toast--success {
+  background-color: #D2FFAB !important;
+} */

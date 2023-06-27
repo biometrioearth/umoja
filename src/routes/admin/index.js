@@ -7,6 +7,7 @@ import withAdminLayout from '../../layout/withAdminLayout';
 
 const Charts = lazy(() => import('./charts'));
 const Projects = lazy(() => import('./projects'));
+const Devices = lazy(() => import('./devices'));
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Admin = React.memo(() => {
@@ -27,6 +28,7 @@ const Admin = React.memo(() => {
         <Route path="pages/*" element={<Pages />} />
         <Route path="charts/*" element={<Charts />} />
         <Route path="project/*" element={<Projects />} />
+        <Route path="device/*" element={<Devices />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

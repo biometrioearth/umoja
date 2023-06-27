@@ -1,36 +1,55 @@
-import React, { lazy, useState, Suspense } from 'react';
+import React, { lazy, useState, Suspense, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Spin, Select } from 'antd';
 import { Routes, Route, Link } from 'react-router-dom';
 import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
 import CreateProject from './overview/CreateProject';
+// import DeleteModal from './overview/DeleteModal';
 import Heading from '../../components/heading/heading';
 import { AutoComplete } from '../../components/autoComplete/autoComplete';
 import { Button } from '../../components/buttons/buttons';
-import { sortingProjectByCategory } from '../../redux/project/actionCreator';
+import { sortingProjectByCategory, fetchAllProject } from '../../redux/project/actionCreator';
+// import CustomAlert from '../../components/alert';
 
-const Grid = lazy(() => import('./overview/Grid'));
 const List = lazy(() => import('./overview/List'));
-const SamplingAreas = lazy(() => import('./overview/SamplingAreas'));
-const SamplingPoints = lazy(() => import('./overview/SamplingPoints'));
-const Sites = lazy(() => import('./overview/Sites'));
 
 function Project() {
   const dispatch = useDispatch();
+  // const isLoading = useSelector((state) => state.projects.loading);
+  // const [showErrorAlert, setShowErrorAlert] = useState(false);
+
+  // const handleGetProject = useCallback(() => {
+  //   dispatch(fetchAllProject());
+  // }, [dispatch]);
+  const projects = useSelector((state) => state.projects.data);
+
+  useEffect(() => {
+    dispatch(fetchAllProject());
+  }, [dispatch]);
+
+  const [searchText, setSearchText] = useState('');
+  // const refetch = useSelector((state) => state.projects.refetch);
+
   const searchData = useSelector((state) => state.headerSearchData);
 
   const [state, setState] = useState({
     notData: searchData,
     visible: false,
+    visibledelete: false,
+    projectId: '',
     categoryActive: 'all',
   });
 
+  // const handleAlertClose = () => {
+  //   setShowErrorAlert(false);
+  // };
+
   const { notData, visible } = state;
-  const handleSearch = (searchText) => {
-    const data = searchData.filter((item) => item.title.toUpperCase().startsWith(searchText.toUpperCase()));
+  const handleSearch = () => {
+    const newdata = searchData.filter((item) => item.title.toUpperCase().startsWith(searchText.toUpperCase()));
     setState({
       ...state,
-      notData: data,
+      notData: newdata,
     });
   };
 
@@ -51,16 +70,51 @@ function Project() {
       visible: false,
     });
   };
+  // const showDeleteModal = (id) => {
+  //   setState({
+  //     ...state,
+  //     visibledelete: true,
+  //     projectId: id,
+  //   });
+  // };
+
+  const handleCreateProject = async () => {
+    try {
+      // showDeleteModal(id);
+      dispatch(fetchAllProject());
+      onCancel();
+    } catch (errors) {
+      onCancel();
+    }
+  };
+
+  // const onDeleteCancel = () => {
+  //   setState({
+  //     ...state,
+  //     visibledelete: false,
+  //   });
+  // };
+
+  // const handleDeleteProject = async () => {
+  //   try {
+  //     dispatch(fetchAllProject());
+  //     onCancel();
+  //   } catch (errors) {
+  //     onCancel();
+  //   }
+  // };
+
   return (
     <>
+      {/* {showErrorAlert && <CustomAlert type="error" message={error.message} onClose={handleAlertClose} />} */}
       <div className="flex items-center justify-between flex-wrap gap-[20px] ssm:flex-col pt-[42px] pb-[35px] px-[25px] text-dark dark:text-white87 font-medium text-[17px]">
         <div className="inline-flex items-center">
           <Heading as="h4" className="text-dark dark:text-white87 text-[22px] font-semibold mb-0">
             Projects
           </Heading>
-          <span className="relative ltr:ml-3 rtl:mr-3 ltr:pl-[15px] rtl:pr-[15px] text-body dark:text-white60 text-[15px] font-medium before:absolute before:top-0 ltr:before:left-0 rtl:before:right-0 before:w-[1px] before:h-6 before:bg-normal dark:before:bg-white10">
-            12 Running Projects
-          </span>
+          {/* <span className="relative ltr:ml-3 rtl:mr-3 ltr:pl-[15px] rtl:pr-[15px] text-body dark:text-white60 text-[15px] font-medium before:absolute before:top-0 ltr:before:left-0 rtl:before:right-0 before:w-[1px] before:h-6 before:bg-normal dark:before:bg-white10">
+            Projects
+          </span> */}
         </div>
         <Button
           onClick={showModal}
@@ -80,7 +134,14 @@ function Project() {
             <div className="flex items-center w-full mb-[25px] flex-wrap justify-between">
               <div className="flex items-center flex-wrap gap-[20px]  lg:justify-center">
                 <div className="min-3xl:[&>div.ant-select]:w-[350px] ssm:[&>div.ant-select]:w-full [&>div>div.ant-select-selector]:border-0">
-                  <AutoComplete onSearch={handleSearch} dataSource={notData} placeholder="Search projects" patterns />
+                  <AutoComplete
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    onSearch={handleSearch}
+                    dataSource={notData}
+                    placeholder="Search projects"
+                    patterns
+                  />
                 </div>
               </div>
               <div>
@@ -107,18 +168,22 @@ function Project() {
                 }
               >
                 <Routes>
-                  <Route index element={<Grid />} />
-                  <Route path="grid" element={<Grid />} />
-                  <Route path="list" element={<List />} />
-                  <Route path="sampling-areas" element={<SamplingAreas />} />
-                  <Route path="sampling-points" element={<SamplingPoints />} />
-                  <Route path="sites" element={<Sites />} />
+                  {/* <Route index element={<List projectsData={data.allProjects} />} />
+                  <Route path="list" element={<List projectsData={data.allProjects} />} /> */}
+                  <Route index element={<List projectsData={projects} />} />
+                  <Route path="list" element={<List projectsData={projects} />} />
                 </Routes>
               </Suspense>
             </div>
           </Col>
         </Row>
-        <CreateProject onCancel={onCancel} visible={visible} />
+        <CreateProject onCancel={onCancel} visible={visible} onCreateProject={handleCreateProject} />
+        {/* <DeleteModal
+          onCancel={onDeleteCancel}
+          visible={visibledelete}
+          id={projectId}
+          onDeleteModal={handleDeleteProject}
+        /> */}
       </main>
     </>
   );

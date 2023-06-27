@@ -1,4 +1,4 @@
-import { UilArrowGrowth, UilBagAlt, UilCreateDashboard, UilSetting } from '@iconscout/react-unicons';
+import { UilArrowGrowth, UilBagAlt, UilTablet, UilCreateDashboard, UilSetting } from '@iconscout/react-unicons';
 import { Menu } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,20 +32,20 @@ function MenuItems({ toggleCollapsed }) {
   const path = '/dashboard';
 
   const pathName = window.location.pathname;
-  const pathArray = pathName.split(path);
+  const pathArray = pathName?.split(path);
   const mainPath = pathArray[1];
-  const mainPathSplit = mainPath.split('/');
+  const mainPathSplit = mainPath?.split('/');
 
   const [openKeys, setOpenKeys] = React.useState(
-    !topMenu ? [`${mainPathSplit.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : [],
+    !topMenu ? [`${mainPathSplit?.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : [],
   );
 
   const onOpenChange = (keys) => {
-    setOpenKeys(keys[keys.length - 1] !== 'recharts' ? [keys.length && keys[keys.length - 1]] : keys);
+    setOpenKeys(keys[keys.length - 1] !== 'recharts' ? [keys?.length && keys[keys.length - 1]] : keys);
   };
 
   const onClick = (item) => {
-    if (item.keyPath.length === 1) setOpenKeys([]);
+    if (item?.keyPath?.length === 1) setOpenKeys([]);
   };
 
   const items = [
@@ -58,9 +58,9 @@ function MenuItems({ toggleCollapsed }) {
     ),
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}`}>
-        Putter Fish
+        Puffer Fish
       </NavLink>,
-      'Putter Fish',
+      'Puffer Fish',
       !topMenu && <UilArrowGrowth />,
     ),
     getItem(
@@ -74,37 +74,17 @@ function MenuItems({ toggleCollapsed }) {
         </NavLink>
       ),
     ),
-
-    // getItem(t('project'), 'project', !topMenu && <UilBagAlt />, [
-    //   getItem(
-    //     <NavLink onClick={toggleCollapsed} to={`${path}/project/site/sites`}>
-    //       Sites
-    //     </NavLink>,
-    //     'Sites',
-    //     null,
-    //   ),
-    //   getItem(
-    //     <NavLink onClick={toggleCollapsed} to={`${path}/project/sampling-area/sampling-areas`}>
-    //       Sampling Areas
-    //     </NavLink>,
-    //     'Sampling Areas',
-    //     null,
-    //   ),
-    //   getItem(
-    //     <NavLink onClick={toggleCollapsed} to={`${path}/project/sampling-point/sampling-points`}>
-    //       Sampling Points
-    //     </NavLink>,
-    //     'Sampling Points',
-    //     null,
-    //   ),
-    //   // getItem(
-    //   //   <NavLink onClick={toggleCollapsed} to={`${path}/project/projectDetails/1/tasklist`}>
-    //   //     {t('project')} {t('details')}
-    //   //   </NavLink>,
-    //   //   'projectDetails',
-    //   //   null,
-    //   // ),
-    // ]),
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={`${path}/device/view/list`}>
+        {t('device')}
+      </NavLink>,
+      'device',
+      !topMenu && (
+        <NavLink className="menuItem-iocn" to={`${path}/device/view/list`}>
+          <UilTablet />
+        </NavLink>
+      ),
+    ),
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/pages/settings`}>
         {t('settings')}
@@ -128,12 +108,12 @@ function MenuItems({ toggleCollapsed }) {
         !topMenu
           ? [
               `${
-                mainPathSplit.length === 1 ? 'home' : mainPathSplit.length === 2 ? mainPathSplit[1] : mainPathSplit[2]
+                mainPathSplit?.length === 1 ? 'home' : mainPathSplit?.length === 2 ? mainPathSplit[1] : mainPathSplit[2]
               }`,
             ]
           : []
       }
-      defaultOpenKeys={!topMenu ? [`${mainPathSplit.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : []}
+      defaultOpenKeys={!topMenu ? [`${mainPathSplit?.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : []}
       overflowedIndicator={<UilEllipsisV />}
       openKeys={openKeys}
       items={items}

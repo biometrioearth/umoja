@@ -3,7 +3,7 @@ import { Alert } from 'antd';
 import PropTypes from 'prop-types';
 
 function CustomAlert({ type, message, onClose }) {
-  const [duration] = useState(3000);
+  const [duration] = useState(30000);
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -22,7 +22,8 @@ function CustomAlert({ type, message, onClose }) {
         message={message}
         closable
         onClose={onClose}
-        style={{ transition: 'opacity 3s ease-in-out', opacity: visible ? 1 : 0 }}
+        showIcon
+        style={{ transition: 'opacity 30s ease-in-out', opacity: visible ? 1 : 0 }}
       />
     </div>
   );

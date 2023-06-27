@@ -1,23 +1,38 @@
+/* eslint-disable camelcase */
 import UilAngleDown from '@iconscout/react-unicons/icons/uil-angle-down';
 import UilSetting from '@iconscout/react-unicons/icons/uil-setting';
 import UilSignout from '@iconscout/react-unicons/icons/uil-signout';
 import { Avatar } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 import Search from './Search';
 import { Popover } from '../../popup/popup';
 import Heading from '../../heading/heading';
 import { logOut } from '../../../redux/authentication/actionCreator';
 
 const AuthInfo = React.memo(() => {
+  const token = localStorage.getItem('authData');
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
+  const cookiesExpired = jwt_decode(token).exp * 1000 <= Date.now();
+  useEffect(() => {
+    // Check if cookies have expired or user is not authenticated
+
+    if (cookiesExpired) {
+      console.log('Expired');
+      navigate('/login');
+      // Redirect to login page
+      dispatch(logOut(() => navigate('/login')));
+    }
+  }, [cookiesExpired]);
+
   const SignOut = (e) => {
     e.preventDefault();
-    dispatch(logOut(() => navigate('/')));
+    dispatch(logOut(() => navigate('/login')));
   };
 
   const userContent = (

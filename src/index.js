@@ -1,15 +1,20 @@
 import React from 'react';
 // import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
+import { ApolloProvider } from '@apollo/client';
 import App from './App';
 import './i18n/config';
 import reportWebVitals from './reportWebVitals';
+import client from './config/client';
+import './config/notification/notification';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>,
 );
 

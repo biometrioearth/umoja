@@ -6,14 +6,9 @@ import PropTypes from 'prop-types';
 
 import Heading from '../../../components/heading/heading';
 import { GlobalUtilityStyle, PaginationStyle } from '../../styled';
-// import { fetchAllProject } from '../../../redux/project/actionCreator';
 
-function ProjectLists(props) {
-  // const handleAlertClose = () => {
-  //   setShowErrorAlert(false);
-  // };
-
-  const { projectsData } = props;
+function DeviceLists(props) {
+  const { devicesData } = props;
 
   const dataSource = [];
   const onShowSizeChange = () => {};
@@ -22,27 +17,26 @@ function ProjectLists(props) {
     // You can create pagination in here
   };
 
-  if (projectsData && projectsData?.items && projectsData?.items?.length)
-    projectsData?.items.map((value) => {
-      const { id, title, shortname, temporality, projectConfiguration, createdAt } = value;
+  if (devicesData && devicesData?.items && devicesData?.items?.length)
+    devicesData?.items.map((value) => {
+      const { id, serialNumber, additionalIdentifier, deviceType, brand, status, createdAt } = value;
       return dataSource.push({
         key: id,
-        title: (
+        serialNumber: (
           <>
             <Heading as="h4" className="mb-[5px] text-dark dark:text-white87 text-[15px] font-medium">
-              <Link to={`/dashboard/project/projectDetails/${id}`} className="text-dark dark:text-white87">
-                {title}
+              <Link to={`/dashboard/device/deviceDetails/${id}`} className="text-dark dark:text-white87">
+                {serialNumber}
               </Link>
             </Heading>
           </>
         ),
-        shortname: <span className="text-body dark:text-white60 text-[15px] font-medium">{shortname}</span>,
-        projectConfiguration: (
-          <span className="text-body dark:text-white60 text-[15px] font-medium">
-            {projectConfiguration.description}
-          </span>
+        additionalIdentifier: (
+          <span className="text-body dark:text-white60 text-[15px] font-medium">{additionalIdentifier}</span>
         ),
-        temporality: <span className="text-body dark:text-white60 text-[15px] font-medium">{temporality}</span>,
+        deviceType: <span className="text-body dark:text-white60 text-[15px] font-medium">{deviceType}</span>,
+        brand: <span className="text-body dark:text-white60 text-[15px] font-medium">{brand}</span>,
+        status: <span className="text-body dark:text-white60 text-[15px] font-medium">{status}</span>,
         createdAt: (
           <span className="text-body dark:text-white60 text-[15px] font-medium">
             {new Date(createdAt).toDateString()}
@@ -53,39 +47,39 @@ function ProjectLists(props) {
 
   const columns = [
     {
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
+      title: 'Serial Number',
+      dataIndex: 'serialNumber',
+      key: 'serialNumber',
       className: 'text-light dark:text-white60 text-[15px] py-2.5 last:text-end border-none before:hidden',
     },
     {
-      title: 'Short Name',
-      dataIndex: 'shortname',
-      key: 'shortname',
+      title: 'Additional Identifier',
+      dataIndex: 'additionalIdentifier',
+      key: 'additionalIdentifier',
       className: 'text-light dark:text-white60 text-[15px] py-2.5 last:text-end border-none before:hidden',
     },
     {
-      title: 'Project Configuration',
-      dataIndex: 'projectConfiguration',
-      key: 'projectConfiguration',
+      title: 'Device Type',
+      dataIndex: 'deviceType',
+      key: 'deviceType',
       className: 'text-light dark:text-white60 text-[15px] last:text-end border-none before:hidden',
     },
     {
-      title: 'Temporality',
-      dataIndex: 'temporality',
-      key: 'temporality',
+      title: 'Brand',
+      dataIndex: 'brand',
+      key: 'brand',
+      className: 'text-light dark:text-white60 text-[15px] last:text-end border-none before:hidden',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
       className: 'text-light dark:text-white60 text-[15px] last:text-end border-none before:hidden',
     },
     {
       title: 'Date Created',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      className: 'text-light dark:text-white60 text-[15px] last:text-end border-none before:hidden',
-    },
-    {
-      title: '',
-      dataIndex: 'action',
-      key: 'action',
       className: 'text-light dark:text-white60 text-[15px] last:text-end border-none before:hidden',
     },
   ];
@@ -102,15 +96,15 @@ function ProjectLists(props) {
         </Col>
         <Col xs={24} className="pb-30">
           <PaginationStyle>
-            {projectsData?.items?.length ? (
+            {devicesData?.items?.length ? (
               <div className="ant-pagination-custom-style text-end mt-[30px] mb-[25px]">
                 <Pagination
                   onChange={onHandleChange}
                   showSizeChanger
                   onShowSizeChange={onShowSizeChange}
-                  pageSize={projectsData.pageInfo.pageSize}
-                  defaultCurrent={projectsData.pageInfo.currentPage}
-                  total={projectsData.pageInfo.totalPages}
+                  pageSize={devicesData.pageInfo.pageSize}
+                  defaultCurrent={devicesData.pageInfo.currentPage}
+                  total={devicesData.pageInfo.totalPages}
                 />
               </div>
             ) : null}
@@ -120,7 +114,7 @@ function ProjectLists(props) {
     </GlobalUtilityStyle>
   );
 }
-ProjectLists.propTypes = {
-  projectsData: PropTypes.object,
+DeviceLists.propTypes = {
+  devicesData: PropTypes.object,
 };
-export default ProjectLists;
+export default DeviceLists;

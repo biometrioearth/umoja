@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Cookies from 'js-cookie';
 import actions from './actions';
 

@@ -9,7 +9,7 @@ function Modal(props) {
   return (
     <ModalStyled
       title={title}
-      visible={visible}
+      open={visible}
       onOk={onOk}
       onCancel={onCancel}
       type={color ? type : false}

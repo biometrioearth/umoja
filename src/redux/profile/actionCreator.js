@@ -1,21 +1,62 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-return-assign */
+// import { gql, useQuery } from '@apollo/client';
 import actions from './actions';
-import initialState from '../../demoData/friends.json';
+import { GET_ALL_USERS } from '../query';
 
-const { profileFriendsBegin, profileFriendsSuccess, profileFriendsErr, postDataBegin, postDataSuccess, postDataErr } =
-  actions;
+const {
+  profileUsersBegin,
+  profileUsersSuccess,
+  profileUsersErr,
+  profileFriendsBegin,
+  // profileFriendsSuccess,
+  profileFriendsErr,
+  postDataBegin,
+  postDataSuccess,
+  postDataErr,
+} = actions;
 
-const profileFriendsChangeStatus = (key) => {
+const fetchAllUsers = () => {
+  return async (dispatch) => {
+    try {
+      dispatch(profileUsersBegin());
+      const response = await fetch(process.env.REACT_APP_BALAM_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `
+              query {
+                ${GET_ALL_USERS}
+              }
+            `,
+        }),
+      });
+
+      const { data, errors } = await response.json();
+      if (errors) {
+        throw new Error(errors[0].message);
+      }
+
+      const { allProjects } = data;
+      dispatch(profileUsersSuccess(allProjects));
+    } catch (error) {
+      dispatch(profileUsersErr(error.message));
+    }
+  };
+};
+
+const profileFriendsChangeStatus = () => {
   return async (dispatch) => {
     try {
       dispatch(profileFriendsBegin());
-      initialState.map((friend) => {
-        if (friend.key === key) {
-          return friend.status ? (friend.status = false) : (friend.status = true);
-        }
-        return dispatch(profileFriendsSuccess(initialState));
-      });
+      // initialState.map((friend) => {
+      //   if (friend.key === key) {
+      //     return friend.status ? (friend.status = false) : (friend.status = true);
+      //   }
+      //   return dispatch(profileFriendsSuccess(initialState));
+      // });
     } catch (err) {
       dispatch(profileFriendsErr(err));
     }
@@ -86,4 +127,4 @@ const postDelete = (data, key) => {
   };
 };
 
-export { profileFriendsChangeStatus, submitPost, likeUpdate, commentUpdate, postDelete };
+export { profileFriendsChangeStatus, submitPost, likeUpdate, commentUpdate, postDelete, fetchAllUsers };

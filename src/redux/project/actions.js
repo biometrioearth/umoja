@@ -1,4 +1,13 @@
 const actions = {
+  SET_REFETCH_BEGIN: 'SET_REFETCH_BEGIN',
+  ALL_PROJECT_BEGIN: 'ALL_PROJECT_BEGIN',
+  ALL_PROJECT_SUCCESS: 'ALL_PROJECT_SUCCESS',
+  ALL_PROJECT_ERR: 'ALL_PROJECT_ERR',
+
+  CREATE_PROJECT_BEGIN: 'CREATE_PROJECT_BEGIN',
+  CREATE_PROJECT_SUCCESS: 'CREATE_PROJECT_SUCCESS',
+  CREATE_PROJECT_ERR: 'CREATE_PROJECT_ERR',
+
   SINGLE_PROJECT_BEGIN: 'SINGLE_PROJECT_BEGIN',
   SINGLE_PROJECT_SUCCESS: 'SINGLE_PROJECT_SUCCESS',
   SINGLE_PROJECT_ERR: 'SINGLE_PROJECT_ERR',
@@ -10,6 +19,53 @@ const actions = {
   SORTING_PROJECT_BEGIN: 'SORTING_PROJECT_BEGIN',
   SORTING_PROJECT_SUCCESS: 'SORTING_PROJECT_SUCCESS',
   SORTING_PROJECT_ERR: 'SORTING_PROJECT_ERR',
+
+  setRefetchBegin: (refetch) => {
+    return {
+      type: actions.SET_REFETCH_BEGIN,
+      payload: refetch,
+    };
+  },
+
+  allProjectBegin: () => {
+    return {
+      type: actions.ALL_PROJECT_BEGIN,
+    };
+  },
+
+  allProjectSuccess: (data) => {
+    return {
+      type: actions.ALL_PROJECT_SUCCESS,
+      data,
+    };
+  },
+
+  allProjectErr: (err) => {
+    return {
+      type: actions.ALL_PROJECT_ERR,
+      err,
+    };
+  },
+
+  createProjectBegin: () => {
+    return {
+      type: actions.CREATE_PROJECT_BEGIN,
+    };
+  },
+
+  createProjectSuccess: (data) => {
+    return {
+      type: actions.CREATE_PROJECT_SUCCESS,
+      data,
+    };
+  },
+
+  createProjectErr: (err) => {
+    return {
+      type: actions.CREATE_PROJECT_ERR,
+      err,
+    };
+  },
 
   singleProjectBegin: () => {
     return {

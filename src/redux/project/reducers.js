@@ -1,7 +1,11 @@
 import actions from './actions';
-import staticData from '../../demoData/projectData.json';
 
 const {
+  SET_REFETCH_BEGIN,
+  ALL_PROJECT_BEGIN,
+  ALL_PROJECT_SUCCESS,
+  ALL_PROJECT_ERR,
+
   SINGLE_PROJECT_BEGIN,
   SINGLE_PROJECT_SUCCESS,
   SINGLE_PROJECT_ERR,
@@ -16,14 +20,37 @@ const {
 } = actions;
 
 const initialStateFilter = {
-  data: staticData,
+  data: null,
   loading: false,
   error: null,
 };
 
 const projectReducer = (state = initialStateFilter, action) => {
-  const { type, data, err } = action;
+  const { type, data, err, refetch } = action;
   switch (type) {
+    case SET_REFETCH_BEGIN:
+      return {
+        ...initialStateFilter,
+        refetch,
+      };
+    case ALL_PROJECT_BEGIN:
+      return {
+        ...initialStateFilter,
+        loading: true,
+      };
+    case ALL_PROJECT_SUCCESS:
+      return {
+        ...initialStateFilter,
+        data,
+        loading: false,
+      };
+    case ALL_PROJECT_ERR:
+      return {
+        ...initialStateFilter,
+        error: err,
+        loading: false,
+      };
+
     case FILTER_PROJECT_BEGIN:
       return {
         ...initialStateFilter,
@@ -64,7 +91,7 @@ const projectReducer = (state = initialStateFilter, action) => {
 };
 
 const initialState = {
-  data: staticData,
+  data: [],
   loading: false,
   error: null,
 };

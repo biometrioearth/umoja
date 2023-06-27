@@ -1,9 +1,9 @@
 import actions from './actions';
-import toData from '../../demoData/friends.json';
 import posts from '../../demoData/post.json';
 
 const initialState = {
-  friends: toData,
+  friends: [],
+  users: [],
   loading: false,
   error: null,
   posts,
@@ -11,6 +11,9 @@ const initialState = {
 };
 
 const {
+  PROFILE_USERS_BEGIN,
+  PROFILE_USERS_SUCCESS,
+  PROFILE_USERS_ERR,
   PROFILE_FRIENDS_BEGIN,
   PROFILE_FRIENDS_SUCCESS,
   PROFILE_FRIENDS_ERR,
@@ -22,6 +25,23 @@ const {
 const ProfileReducer = (state = initialState, action) => {
   const { type, data, err } = action;
   switch (type) {
+    case PROFILE_USERS_BEGIN:
+      return {
+        ...state,
+        sLoading: true,
+      };
+    case PROFILE_USERS_SUCCESS:
+      return {
+        ...state,
+        friends: data,
+        sLoading: false,
+      };
+    case PROFILE_USERS_ERR:
+      return {
+        ...state,
+        error: err,
+        sLoading: false,
+      };
     case PROFILE_FRIENDS_BEGIN:
       return {
         ...state,
