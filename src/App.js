@@ -4,12 +4,14 @@ import './static/css/style.css';
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
+import { ApolloProvider } from '@apollo/client';
 import store from './redux/store';
 import Admin from './routes/admin';
 import Auth from './routes/auth';
 import config from './config/config';
 import ProtectedRoute from './components/utilities/protectedRoute';
 import 'antd/dist/antd.less';
+import client from './config/useClient';
 
 const NotFound = lazy(() => import('./container/pages/404'));
 
@@ -37,27 +39,29 @@ function ProviderConfig() {
   }, [setPath]);
 
   return (
-    <ConfigProvider direction="ltr">
-      <ThemeProvider theme={{ ...theme, rtl, topMenu, mainContent }}>
-        <Router basename={process.env.PUBLIC_URL}>
-          {!isLoggedIn ? (
-            <Routes>
-              <Route path="/*" element={<Auth />} />{' '}
-            </Routes>
-          ) : (
-            <Routes>
-              <Route path="/dashboard/*" element={<ProtectedRoute path="/*" Component={Admin} />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          )}
-          {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
-            <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" />} />
-            </Routes>
-          )}
-        </Router>
-      </ThemeProvider>
-    </ConfigProvider>
+    <ApolloProvider client={client}>
+      <ConfigProvider direction="ltr">
+        <ThemeProvider theme={{ ...theme, rtl, topMenu, mainContent }}>
+          <Router basename={process.env.PUBLIC_URL}>
+            {!isLoggedIn ? (
+              <Routes>
+                <Route path="/*" element={<Auth />} />{' '}
+              </Routes>
+            ) : (
+              <Routes>
+                <Route path="/dashboard/*" element={<ProtectedRoute path="/*" Component={Admin} />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            )}
+            {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
+              <Routes>
+                <Route path="/" element={<Navigate to="/dashboard" />} />
+              </Routes>
+            )}
+          </Router>
+        </ThemeProvider>
+      </ConfigProvider>
+    </ApolloProvider>
   );
 }
 

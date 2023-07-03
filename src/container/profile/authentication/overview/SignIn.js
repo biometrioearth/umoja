@@ -3,18 +3,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Row, Col } from 'antd';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 import { login } from '../../../../redux/authentication/actionCreator';
 
 import CustomAlert from '../../../../components/alert';
 
-const client = new ApolloClient({
-  uri: process.env.REACT_APP_BALAM_URL,
-  cache: new InMemoryCache(),
-});
-
-const ApolloContext = React.createContext(null);
 function SignIn({ error }) {
   const history = useNavigate();
 
@@ -46,7 +39,7 @@ function SignIn({ error }) {
   );
 
   return (
-    <ApolloContext.Provider value={client}>
+    <>
       <Row justify="center">
         <Col xxl={6} xl={8} md={12} sm={18} xs={24}>
           <div className="mt-6 bg-white rounded-md dark:bg-white10 shadow-regular dark:shadow-none">
@@ -96,10 +89,11 @@ function SignIn({ error }) {
       </Row>
       {/* {showSuccessAlert && <CustomAlert type="success" message={showMessage} onClose={handleAlertClose} />} */}
       {showErrorAlert && <CustomAlert type="error" message={showMessage} onClose={handleAlertClose} />}
-    </ApolloContext.Provider>
+    </>
   );
 }
 const mapStateToProps = (state) => ({
   error: state.auth.error, // Assuming your error state is stored under 'login.error'
 });
+
 export default connect(mapStateToProps)(SignIn);

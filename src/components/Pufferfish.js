@@ -5,7 +5,7 @@ const RemotePufferfish = React.lazy(() => import('pufferfishclient/App'));
 
 function Pufferfish() {
   return (
-    <div>
+    <div className="sc-gFqAkR ggMBuA" style={{ height: '2100px' }}>
       <Suspense fallback="Loading...">
         <RemotePufferfish />
       </Suspense>

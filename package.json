@@ -6,6 +6,7 @@
   "author": "Biometrio.earth <biometrio.earth@.org> (https://biometrio.earth.org)",
   "dependencies": {
     "@apollo/client": "^3.7.15",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@iconscout/react-unicons": "^1.1.6",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
