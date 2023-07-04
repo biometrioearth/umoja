@@ -13,7 +13,7 @@ import { CREATE_DEVICE_MUTATION, UPDATE_DEVICE_MUTATION } from '../../../redux/m
 
 const { Option } = Select;
 
-function CreateDevice({ visible, onCancel, projectType, onCreateDevice, id, devices }) {
+function CreateDevice({ visible, onCancel, projectType, onCreateDevice, id, device }) {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
 
@@ -41,10 +41,8 @@ function CreateDevice({ visible, onCancel, projectType, onCreateDevice, id, devi
     };
   }, [visible]);
 
-  const singleDevice = devices?.items?.find((device) => device.id === id);
-
   useEffect(() => {
-    form.setFieldsValue(singleDevice);
+    form.setFieldsValue(device);
     return () => {};
   }, [id, form]);
 
@@ -87,6 +85,7 @@ function CreateDevice({ visible, onCancel, projectType, onCreateDevice, id, devi
       } else {
         window.notify('success', 'Device Updated!');
         onCreateDevice(data);
+        form.resetFields();
       }
     },
     onError: (errors) => {
@@ -130,6 +129,7 @@ function CreateDevice({ visible, onCancel, projectType, onCreateDevice, id, devi
   // };
 
   const handleCancel = () => {
+    form.resetFields();
     onCancel();
   };
 
@@ -155,7 +155,7 @@ function CreateDevice({ visible, onCancel, projectType, onCreateDevice, id, devi
           <Form.Item
             name="additionalIdentifier"
             label="Additional Identifier"
-            rules={[{ message: 'Please input an Additional Identifier!', required: true }]}
+            rules={[{ message: 'Please input an Additional Identifier!', required: false }]}
             className="mb-[26px] [&>.ant-form-item-row>div>div>div>input]:border-normal dark:[&>.ant-form-item-row>div>div>div>input]:text-white60 dark:[&>.ant-form-item-row>div>div>div>input]:border-white10 [&>.ant-form-item-row>div>div>div>input]:rounded-md"
           >
             <Input placeholder="Additional Identifier" type="text" />
@@ -243,7 +243,7 @@ CreateDevice.propTypes = {
   onCancel: propTypes.func.isRequired,
   onCreateDevice: propTypes.func,
   id: propTypes.string,
-  devices: propTypes.array,
+  device: propTypes.object,
 };
 
 export default CreateDevice;

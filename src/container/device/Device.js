@@ -1,27 +1,39 @@
 import React, { lazy, useState, Suspense, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Row, Col, Spin, Select } from 'antd';
+import { useQuery } from '@apollo/client';
+import { useSelector } from 'react-redux';
+import { Row, Col, Spin, Input } from 'antd';
 import { Routes, Route, Link } from 'react-router-dom';
 import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
+import { SearchOutlined } from '@ant-design/icons';
 import CreateDevice from './overview/CreateDevice';
 import Heading from '../../components/heading/heading';
-import { AutoComplete } from '../../components/autoComplete/autoComplete';
 import { Button } from '../../components/buttons/buttons';
-import { fetchAllDevice } from '../../redux/device/actionCreator';
+import { GET_ALL_DEVICES } from '../../redux/query';
 
 const List = lazy(() => import('./overview/List'));
 
 function Device() {
-  const dispatch = useDispatch();
-  const { data, refetch } = useSelector((state) => state.devices);
+  const [devices, setDevices] = useState([]);
+  const [searchText, setSearchText] = useState('');
+
+  const { data, error, loading, refetch } = useQuery(GET_ALL_DEVICES, {
+    variables: {
+      search: searchText,
+      sort: [
+        { order: 'DESC', field: 'serial_number' },
+        { order: 'ASC', field: 'device_type' },
+        // Add more sorting configurations as needed
+      ],
+      pageSize: 10,
+      page: 1,
+    },
+  });
 
   useEffect(() => {
-    dispatch(fetchAllDevice());
-  }, []);
-
-  console.log({ data });
-
-  const [searchText, setSearchText] = useState('');
+    if (!error && !loading) {
+      setDevices(data.allDevices);
+    }
+  }, [data]);
 
   const searchData = useSelector((state) => state.headerSearchData);
 
@@ -36,14 +48,15 @@ function Device() {
   //   setShowErrorAlert(false);
   // };
 
-  const { notData, visible } = state;
-  const handleSearch = () => {
-    const newdata = searchData.filter((item) => item.title.toUpperCase().startsWith(searchText.toUpperCase()));
-    setState({
-      ...state,
-      notData: newdata,
-    });
+  const { visible } = state;
+
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
   };
+
+  useEffect(() => {
+    refetch({ search: searchText });
+  }, [searchText]);
   const showModal = () => {
     setState({
       ...state,
@@ -61,13 +74,25 @@ function Device() {
   const handleCreateDevice = async () => {
     try {
       // showDeleteModal(id);
-      await refetch();
-      dispatch(fetchAllDevice());
+      refetch();
       onCancel();
     } catch (errors) {
       onCancel();
     }
   };
+  const paginateData = async (current, pageSize) => {
+    refetch({ page: current, pageSize });
+  };
+
+  const filterSort = async (pagination, filters, sorter) => {
+    const { column, columnKey, ...sortFields } = sorter;
+    const renamedSortFields = {
+      ...sortFields,
+      order: sortFields.order === 'descend' ? 'DESC' : 'ASC',
+    };
+    refetch({ sort: renamedSortFields });
+  };
+
   return (
     <>
       <div className="flex items-center justify-between flex-wrap gap-[20px] ssm:flex-col pt-[42px] pb-[35px] px-[25px] text-dark dark:text-white87 font-medium text-[17px]">
@@ -94,27 +119,15 @@ function Device() {
             <div className="flex items-center w-full mb-[25px] flex-wrap justify-between">
               <div className="flex items-center flex-wrap gap-[20px]  lg:justify-center">
                 <div className="min-3xl:[&>div.ant-select]:w-[350px] ssm:[&>div.ant-select]:w-full [&>div>div.ant-select-selector]:border-0">
-                  <AutoComplete
+                  <Input
                     value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    onSearch={handleSearch}
-                    dataSource={notData}
-                    placeholder="Search devices"
-                    patterns
+                    onChange={handleSearch}
+                    placeholder="Search Devices"
+                    className="bg-white px-5 border outline-none border-regular dark:border-primary shadow-none rounded-[100px] [&>input]:!bg-transparent dark:[&>input]:!bg-transparent h-[38px]"
+                    suffix={
+                      <SearchOutlined className="flex text-light dark:text-white87 [&>svg]:text-light dark:[&>svg]:text-white87" />
+                    }
                   />
-                </div>
-              </div>
-              <div>
-                <div className="flex flex-wrap items-center lg:justify-center gap-[20px]">
-                  <span className="text-body dark:text-white60">Sort By:</span>
-                  <Select
-                    defaultValue="category"
-                    className="min-w-[260px] ltr:ml-[5px] rtl:mr-[5px] [&>div.ant-select-selector]:border-none [&>div>span.ant-select-selection-item]:text-body dark:[&>div>span.ant-select-selection-item]:text-white60 dark:text-white60 [&>span>span>svg]:text-body dark:[&>span>span>svg]:text-white60 "
-                  >
-                    <Select.Option value="category">Country</Select.Option>
-                    <Select.Option value="rate">Germany</Select.Option>
-                    <Select.Option value="popular">Mexico</Select.Option>
-                  </Select>
                 </div>
               </div>
             </div>
@@ -127,8 +140,14 @@ function Device() {
                 }
               >
                 <Routes>
-                  <Route index element={<List devicesData={data} />} />
-                  <Route path="list" element={<List devicesData={data} />} />
+                  <Route
+                    index
+                    element={<List devicesData={devices} filterSort={filterSort} paginateData={paginateData} />}
+                  />
+                  <Route
+                    path="list"
+                    element={<List devicesData={devices} filterSort={filterSort} paginateData={paginateData} />}
+                  />
                 </Routes>
               </Suspense>
             </div>

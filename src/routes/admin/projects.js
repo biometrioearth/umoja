@@ -11,7 +11,7 @@ function ProjectRoutes() {
     <Routes>
       <Route path="projectDetails/:id/*" element={<ProjectDetails />} />
       <Route path="view/*" element={<Project />} />
-      <Route path="samplingPoints/*" element={<ProjectSamplingPoints />} />
+      <Route path="samplingPoints/:id/*" element={<ProjectSamplingPoints />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

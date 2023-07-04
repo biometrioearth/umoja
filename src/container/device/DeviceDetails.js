@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Row, Col } from 'antd';
 import UilEditAlt from '@iconscout/react-unicons/icons/uil-edit-alt';
 import UilTrashAlt from '@iconscout/react-unicons/icons/uil-trash-alt';
 import UilListUl from '@iconscout/react-unicons/icons/uil-list-ul';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 // import FileListCard from './overview/FileListCard';
 import { useMutation } from '@apollo/client';
 import CreateDevice from './overview/CreateDevice';
 import Heading from '../../components/heading/heading';
+import { Button } from '../../components/buttons/buttons';
 import { alertModal } from '../../components/modals/antd-modals';
 import { fetchAllDevice } from '../../redux/device/actionCreator';
 // import CustomAlert from '../../components/alert';
@@ -18,12 +19,9 @@ import { DELETE_DEVICE_MUTATION } from '../../redux/mutation';
 function DeviceDetails() {
   const history = useNavigate();
   const dispatch = useDispatch();
-  const devices = useSelector((state) => state.devices.data);
   const params = useParams();
-
-  useEffect(() => {
-    fetchAllDevice();
-  }, [devices]);
+  const location = useLocation();
+  const { device } = location.state;
 
   const [deleteDevice] = useMutation(DELETE_DEVICE_MUTATION);
 
@@ -92,8 +90,7 @@ function DeviceDetails() {
     }
   };
 
-  const singleDevice = devices?.items?.find((proj) => proj?.id === params.id);
-  const { serialNumber, additionalIdentifier, deviceType, brand, status, createdAt, currentProject } = singleDevice;
+  const { serialNumber, additionalIdentifier, deviceType, brand, status, createdAt, currentProject } = device;
   return (
     <>
       <div className="flex items-center justify-between pt-[42px] pb-[35px] px-[25px] flex-wrap gap-[15px] sm:justify-center">
@@ -103,22 +100,20 @@ function DeviceDetails() {
           </Heading>
         </div>
         <div className="inline-flex items-center gap-x-5">
-          <Link
-            to=""
+          <Button
             onClick={showModal}
             className="flex items-center gap-x-1.5 bg-white dark:bg-white10 text-primary h-[35px] px-[14px] text-xs font-medium border border-normal dark:border-white10 rounded-md"
           >
             <UilEditAlt className="w-[14px] h-[14px]" />
             Edit
-          </Link>
-          <Link
-            to="#"
+          </Button>
+          <Button
             onClick={showConfirm}
             className="flex items-center gap-x-1.5 bg-white dark:bg-white10 dark:hover:bg-white30 text-danger h-[35px] px-[14px] text-xs font-medium border border-normal dark:border-white10 rounded-md transition duration-300"
           >
             <UilTrashAlt className="w-[14px] h-[14px]" />
             Remove
-          </Link>
+          </Button>
         </div>
       </div>
       <main className="min-h-[715px] lg:min-h-[580px] bg-transparent px-[30px] ssm:px-[15px]  pb-[20px]">
@@ -212,7 +207,7 @@ function DeviceDetails() {
         </Row>
         <CreateDevice
           onCancel={onCancel}
-          devices={devices}
+          device={device}
           id={params.id}
           visible={visible}
           onCreateDevice={handleCreateDevice}

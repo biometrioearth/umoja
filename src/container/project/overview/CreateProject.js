@@ -9,12 +9,12 @@ import propTypes from 'prop-types';
 import { Button } from '../../../components/buttons/buttons';
 import { Modal } from '../../../components/modals/antd-modals';
 import countryData from '../../../demoData/countries.json';
-import { CREATE_PROJECT_MUTATION } from '../../../redux/mutation';
+import { CREATE_PROJECT_MUTATION, UPDATE_PROJECT_MUTATION } from '../../../redux/mutation';
 // import { fetchAllUsers } from '../../../redux/profile/actionCreator';
 
 const { Option } = Select;
 
-function CreateProject({ visible, onCancel, projectType, onCreateProject, id, projects }) {
+function CreateProject({ visible, onCancel, projectType, onCreateProject, id, project }) {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
 
@@ -57,16 +57,13 @@ function CreateProject({ visible, onCancel, projectType, onCreateProject, id, pr
     });
 
     setFormData(updatedData);
-    console.log({ formData });
   };
-
-  console.log({ projects });
-
-  // const users = useSelector((state) => state.users);
-  const singleproject = projects?.items.find((proj) => proj.id === id);
-
+  console.log({ formData });
+  const [durationvalue, durationperiod] = project ? project.duration.split(' ') : '0 Days';
+  const [temporalityvalue, temporalityperiod] = project ? project.temporality.split(' ') : '0 Days';
+  const countries = project ? project.countries.map((country) => country.name) : '';
   useEffect(() => {
-    form.setFieldsValue(singleproject);
+    form.setFieldsValue(project);
     return () => {};
   }, [id, form]);
 
@@ -104,35 +101,82 @@ function CreateProject({ visible, onCancel, projectType, onCreateProject, id, pr
     },
     onCompleted: (data) => {
       setIsLoading(createLoading);
-      if (data?.createProject?.errors?.length > 0) {
-        window.notify('error', data?.createProject?.errors[0]?.messages.join(', '));
+      if (data?.createProject?.errors?.length > 0 || data?.errors) {
+        setIsLoading(false);
+        window.notify('error', data?.createProject?.errors[0]?.messages.join(', ') || data?.errors[0]?.message);
       } else {
         window.notify('success', 'Project Added!');
         onCreateProject(data);
+        form.resetFields();
       }
     },
     onError: () => {
+      setIsLoading(false);
       window.notify('error', createError);
       // Handle error, e.g., show an error message
+    },
+  });
+
+  const [updateProjectMutation, { loading: updateLoading, error: updateError }] = useMutation(UPDATE_PROJECT_MUTATION, {
+    variables: {
+      id,
+      title: payload.title,
+      shortname: payload.shortname,
+      sequenceInterval: payload.sequenceInterval,
+      description: payload.description,
+      contacts: payload.contacts,
+      duration: payload.duration,
+      temporality: payload.temporality,
+      projectConfiguration: payload.projectConfiguration,
+      countries: payload.countries,
+    },
+    onCompleted: (data) => {
+      setIsLoading(updateLoading);
+      if (data?.updateDevice?.errors?.length > 0) {
+        window.notify('error', data?.updateProject?.errors[0]?.messages.join(', '));
+      } else {
+        window.notify('success', 'Project Updated!');
+        onCreateProject(data);
+      }
+    },
+    onError: (errors) => {
+      window.notify('error', errors[0]?.message || updateError);
     },
   });
 
   const handleSubmit = useCallback(
     (values) => {
       setPayload(values);
-      createProjectMutation({
-        variables: {
-          title: values.title,
-          shortname: values.shortname,
-          sequenceInterval: +values.sequenceInterval,
-          description: values.description,
-          contacts: values.contacts,
-          duration: `${values.durationvalue} ${values.durationperiod}`,
-          temporality: `${values.temporalityvalue} ${values.temporalityperiod}`,
-          projectConfiguration: values.projectConfiguration,
-          countries: values.countries,
-        },
-      });
+      if (!id) {
+        createProjectMutation({
+          variables: {
+            title: values.title,
+            shortname: values.shortname,
+            sequenceInterval: +values.sequenceInterval,
+            description: values.description,
+            contacts: values.contacts,
+            duration: `${values.durationvalue} ${values.durationperiod}`,
+            temporality: `${values.temporalityvalue} ${values.temporalityperiod}`,
+            projectConfiguration: values.projectConfiguration,
+            countries: values.countries,
+          },
+        });
+      } else {
+        updateProjectMutation({
+          variables: {
+            id,
+            title: values.title,
+            shortname: values.shortname,
+            sequenceInterval: +values.sequenceInterval,
+            description: values.description,
+            contacts: values.contacts,
+            duration: `${values.durationvalue} ${values.durationperiod}`,
+            temporality: `${values.temporalityvalue} ${values.temporalityperiod}`,
+            projectConfiguration: values.projectConfiguration,
+            countries: values.countries,
+          },
+        });
+      }
       // dispatch(login(values, () => history('/dashboard')));
     },
     [dispatch],
@@ -143,6 +187,7 @@ function CreateProject({ visible, onCancel, projectType, onCreateProject, id, pr
   // };
 
   const handleCancel = () => {
+    form.resetFields();
     onCancel();
   };
 
@@ -203,6 +248,7 @@ function CreateProject({ visible, onCancel, projectType, onCreateProject, id, pr
             <Form.Item
               name="durationvalue"
               label="Duration"
+              initialValue={durationvalue}
               rules={[{ message: 'Please add a duration value!', required: true }]}
               className="mb-[26px] [&>.ant-form-item-row>div>div>div>input]:border-normal dark:[&>.ant-form-item-row>div>div>div>input]:text-white60 dark:[&>.ant-form-item-row>div>div>div>input]:border-white10 [&>.ant-form-item-row>div>div>div>input]:rounded-md"
               style={{ width: '50%' }}
@@ -212,6 +258,7 @@ function CreateProject({ visible, onCancel, projectType, onCreateProject, id, pr
             <Form.Item
               name="durationperiod"
               label=""
+              initialValue={durationperiod}
               rules={[{ message: 'Please Select a period!', required: true }]}
               className="mt-8"
               style={{ width: '100%' }}
@@ -231,6 +278,7 @@ function CreateProject({ visible, onCancel, projectType, onCreateProject, id, pr
             <Form.Item
               name="temporalityvalue"
               label="Temporality"
+              initialValue={temporalityvalue}
               rules={[{ message: 'Please add a temporality value!', required: true }]}
               className="mb-[26px] [&>.ant-form-item-row>div>div>div>input]:border-normal dark:[&>.ant-form-item-row>div>div>div>input]:text-white60 dark:[&>.ant-form-item-row>div>div>div>input]:border-white10 [&>.ant-form-item-row>div>div>div>input]:rounded-md"
               style={{ width: '50%' }}
@@ -240,6 +288,7 @@ function CreateProject({ visible, onCancel, projectType, onCreateProject, id, pr
             <Form.Item
               name="temporalityperiod"
               label=""
+              initialValue={temporalityperiod}
               rules={[{ message: 'Please Select a period!', required: true }]}
               className="mt-8"
               style={{ width: '100%' }}
@@ -273,7 +322,12 @@ function CreateProject({ visible, onCancel, projectType, onCreateProject, id, pr
             </Form.Item>
           </div>
           <div>
-            <Form.Item name="countries" label="" rules={[{ message: 'Please Select a county!', required: true }]}>
+            <Form.Item
+              name="countries"
+              initialValue={countries}
+              label=""
+              rules={[{ message: 'Please Select a county!', required: true }]}
+            >
               <Select
                 className="[&>div]:border-normal dark:[&>div]:border-white10 [&>div]:h-[50px] [&>div]:rounded-md [&>.ant-select-arrow]:text-theme-gray [&>div>.ant-select-selection-item]:flex [&>div>.ant-select-selection-item]:items-center [&>div>.ant-select-selection-item]:text-[#666D92] dark:[&>div>.ant-select-selection-item]:text-white60 "
                 style={{ width: '100%' }}
@@ -281,7 +335,7 @@ function CreateProject({ visible, onCancel, projectType, onCreateProject, id, pr
                 mode="tags"
               >
                 {countryData.map((country) => (
-                  <Option key={country.code} value={country.code}>
+                  <Option key={country.code || country.name} value={country.code || country.name}>
                     {country.name}
                   </Option>
                 ))}
@@ -330,7 +384,7 @@ CreateProject.propTypes = {
   onCancel: propTypes.func.isRequired,
   onCreateProject: propTypes.func,
   id: propTypes.string,
-  projects: propTypes.array,
+  project: propTypes.object,
 };
 
 export default CreateProject;

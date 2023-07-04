@@ -24,8 +24,8 @@ function Dashboard() {
       />
       <GlobalUtilityStyle>
         <div className="min-h-[715px] lg:min-h-[580px] flex-1 h-auto px-8 xl:px-[15px] pb-[30px] bg-transparent">
-          <Row gutter={25}>
-            <Col xxl={12} xs={24}>
+          <Row>
+            <Col xxl={24} xs={24}>
               <Suspense
                 fallback={
                   <Cards headless className="mb-[25px]">
@@ -36,7 +36,7 @@ function Dashboard() {
                 <OverviewDataList />
               </Suspense>
             </Col>
-            <Col xxl={12} xs={24} className="mb-[25px]">
+            <Col xxl={24} xs={24} className="mb-[25px]">
               <Suspense
                 fallback={
                   <Cards headless>
@@ -47,7 +47,7 @@ function Dashboard() {
                 <SiteReport />
               </Suspense>
             </Col>
-            <Col xxl={16} xs={24} className="mb-[25px]">
+            <Col xxl={24} xs={24} className="mb-[25px]">
               <Suspense
                 fallback={
                   <Cards headless>

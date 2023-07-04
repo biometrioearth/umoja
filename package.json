@@ -41,6 +41,7 @@
     "react-dom": "^18.1.0",
     "react-fontawesome": "^1.7.1",
     "react-google-charts": "^4.0.0",
+    "react-highlight-words": "^0.20.0",
     "react-i18next": "^11.16.9",
     "react-leaflet": "2.6.1",
     "react-leaflet-markercluster": "2.0.0-rc3",

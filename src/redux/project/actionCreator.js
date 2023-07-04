@@ -68,8 +68,7 @@ const fetchAllProject = () => {
       });
       // refetch();
       if (!error) {
-        console.log('I was refetched');
-
+        console.log(data, 'I was refetched');
         dispatch(allProjectSuccess(data.allProjects));
       }
     } catch (errors) {

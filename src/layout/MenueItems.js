@@ -106,14 +106,10 @@ function MenuItems({ toggleCollapsed }) {
       // // eslint-disable-next-line no-nested-ternary
       defaultSelectedKeys={
         !topMenu
-          ? [
-              `${
-                mainPathSplit?.length === 1 ? 'home' : mainPathSplit?.length === 2 ? mainPathSplit[1] : mainPathSplit[2]
-              }`,
-            ]
+          ? [`${mainPathSplit.length === 1 ? '' : mainPathSplit.length === 2 ? mainPathSplit[1] : mainPathSplit[2]}`]
           : []
       }
-      defaultOpenKeys={!topMenu ? [`${mainPathSplit?.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : []}
+      defaultOpenKeys={!topMenu ? [`${mainPathSplit.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : []}
       overflowedIndicator={<UilEllipsisV />}
       openKeys={openKeys}
       items={items}

@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { GraphQLEnumType } from 'graphql';
+import { GraphQLEnumType, GraphQLInputObjectType, GraphQLNonNull } from 'graphql';
 
 export const ProjectmanagementDeviceDeviceTypeChoices = new GraphQLEnumType({
   name: 'ProjectmanagementDeviceDeviceTypeChoices',
@@ -45,6 +45,135 @@ export const ProjectmanagementProjectProjectConfigurationChoices = new GraphQLEn
     },
   },
 });
+
+export const SortInputTypeEnum = new GraphQLEnumType({
+  name: 'SortInputTypeEnum',
+  values: {
+    ASC: {
+      value: 'ASC',
+    },
+    DESC: {
+      value: 'DESC',
+    },
+  },
+});
+export const ProjectFieldEnum = new GraphQLEnumType({
+  name: 'ProjectFieldEnum',
+  values: {
+    countries: {
+      value: 'countries',
+      name: 'countries',
+    },
+    title: {
+      value: 'title',
+      name: 'title',
+    },
+    shortname: {
+      value: 'shortname',
+    },
+    project_configuration: {
+      value: 'project_configuration',
+    },
+    temporality: {
+      value: 'temporality',
+    },
+    duration: {
+      value: 'duration',
+    },
+  },
+});
+export const InputTypeEnum = new GraphQLEnumType({
+  name: 'InputTypeEnum',
+  values: {
+    Int: {
+      value: 'Int',
+    },
+    Float: {
+      value: 'Float',
+    },
+    String: {
+      value: 'String',
+    },
+    Boolean: {
+      value: 'Boolean',
+    },
+    Date: {
+      value: 'Date',
+    },
+    Time: {
+      value: 'Time',
+    },
+    DateTime: {
+      value: 'DateTime',
+    },
+  },
+});
+export const SearchOperatorEnum = new GraphQLEnumType({
+  name: 'SearchOperatorEnum',
+  values: {
+    eq: {
+      value: 'eq',
+    },
+    neq: {
+      value: 'neq',
+    },
+    gt: {
+      value: 'gt',
+    },
+    gte: {
+      value: 'gte',
+    },
+    lt: {
+      value: 'lt',
+    },
+    lte: {
+      value: 'lte',
+    },
+    contains: {
+      value: 'contains',
+    },
+    notContains: {
+      value: 'notContains',
+    },
+    OR: {
+      value: 'OR',
+    },
+    AND: {
+      value: 'AND',
+    },
+  },
+});
+export const ProjectFilterTypeInput = new GraphQLEnumType({
+  name: 'ProjectFilterTypeInput',
+  values: {
+    countries: {
+      value: 'countries',
+    },
+    title: {
+      value: 'title',
+    },
+    shortname: {
+      value: 'shortname',
+    },
+    project_configuration: {
+      value: 'project_configuration',
+    },
+    temporality: {
+      value: 'temporality',
+    },
+    duration: {
+      value: 'duration',
+    },
+  },
+});
+export const ProjectSortTypeInput = new GraphQLInputObjectType({
+  name: 'ProjectSortTypeInput',
+  fields: {
+    order: { type: new GraphQLNonNull(SortInputTypeEnum) },
+    field: { type: new GraphQLNonNull(ProjectFieldEnum) },
+  },
+});
+
 // PROJECT MUTATION
 export const CREATE_PROJECT_MUTATION = gql`
   mutation CreateProject(
@@ -88,7 +217,6 @@ export const CREATE_PROJECT_MUTATION = gql`
     }
   }
 `;
-
 export const DELETE_PROJECT_MUTATION = gql`
   mutation deleteProject($id: ID!) {
     deleteProject(id: $id) {
@@ -98,6 +226,50 @@ export const DELETE_PROJECT_MUTATION = gql`
         messages
       }
       message
+    }
+  }
+`;
+export const UPDATE_PROJECT_MUTATION = gql`
+  mutation updateProject(
+    $id: UUID!
+    $title: String!
+    $shortname: String!
+    $sequenceInterval: Int
+    $description: String
+    $contacts: String
+    $duration: String
+    $temporality: String
+    $projectConfiguration: ProjectmanagementProjectProjectConfigurationChoices!
+    $countries: [ProjectCountries]
+  ) {
+    updateProject(
+      id: $id
+      title: $title
+      shortname: $shortname
+      sequenceInterval: $sequenceInterval
+      description: $description
+      contacts: $contacts
+      duration: $duration
+      temporality: $temporality
+      projectConfiguration: $projectConfiguration
+      countries: $countries
+    ) {
+      id
+      title
+      shortname
+      sequenceInterval
+      description
+      contacts
+      duration
+      temporality
+      projectConfiguration
+      countries {
+        name
+      }
+      errors {
+        field
+        messages
+      }
     }
   }
 `;
@@ -164,6 +336,61 @@ export const UPDATE_DEVICE_MUTATION = gql`
       deviceType
       brand
       status
+      errors {
+        field
+        messages
+      }
+    }
+  }
+`;
+// SAMPLING POINT MUTATION
+// export const CREATE_SAMPLING_POINT_MUTATION = gql`
+//   mutation CreateSamplingPoint(
+//     $device: ID!
+//     $project: ID!
+//     $dateDeployment: DateTime!
+//     $dateCollected: DateTime!
+//     $location: PointScalar!
+//     $altitude: Float!
+//   ) {
+//     createSamplingPoint(
+//       device: $device
+//       project: $project
+//       dateDeployment: $dateDeployment
+//       dateCollected: $dateCollected
+//       location: $location
+//       altitude: $altitude
+//     ) {
+//       project
+//       device
+//       dateDeployment
+//       dateCollected
+//       location
+//       altitude
+//       errors {
+//         field
+//         messages
+//       }
+//     }
+//   }
+// `;
+export const CREATE_SAMPLING_POINT_MUTATION = gql`
+  mutation CreateSamplingPoint(
+    $dateDeployment: DateTime!
+    $dateCollected: DateTime!
+    $location: PointScalar!
+    $altitude: Float!
+  ) {
+    createSamplingPoint(
+      dateDeployment: $dateDeployment
+      dateCollected: $dateCollected
+      location: $location
+      altitude: $altitude
+    ) {
+      dateDeployment
+      dateCollected
+      location
+      altitude
       errors {
         field
         messages

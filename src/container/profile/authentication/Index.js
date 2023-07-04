@@ -14,7 +14,7 @@ const AuthLayout = (WraperContent) => {
         }
       >
         <div className="bg-warning sticky top-0 h-full xl:h-full 2xl:h-screen">
-          <div className="py-[20px] 2xl:py-[60px] px-[15px]">
+          <div className="-py-[60px] px-[15px] h-screen">
             <div className="flex justify-center">
               <img
                 className="dark:hidden w-44"

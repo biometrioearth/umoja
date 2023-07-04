@@ -51,7 +51,7 @@ const AutoComplete = React.memo((props) => {
   };
 
   return customComponent ? (
-    <AutoCompleteStyled options={options} style={{ width }} onSelect={onSelect} onSearch={onSearching}>
+    <AutoCompleteStyled options={options} style={{ width }} onSelect={onSelect}>
       {customComponent}
     </AutoCompleteStyled>
   ) : patterns ? (
@@ -63,7 +63,6 @@ const AutoComplete = React.memo((props) => {
       style={{ width }}
       options={content}
       placeholder={placeholder}
-      onSearch={onSearching}
     >
       <Input
         className="bg-transparent px-5 border border-regular dark:border-white10 shadow-none rounded-[100px] [&>input]:!bg-transparent dark:[&>input]:!bg-transparent h-[38px]"

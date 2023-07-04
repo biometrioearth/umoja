@@ -1,35 +1,101 @@
 import React, { lazy, useState, Suspense, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Row, Col, Spin, Select } from 'antd';
+import { useQuery, gql } from '@apollo/client';
+import { useSelector } from 'react-redux';
+import { Row, Col, Spin, Input } from 'antd';
 import { Routes, Route, Link } from 'react-router-dom';
 import UilPlus from '@iconscout/react-unicons/icons/uil-plus';
+import { SearchOutlined } from '@ant-design/icons';
 import CreateProject from './overview/CreateProject';
-// import DeleteModal from './overview/DeleteModal';
 import Heading from '../../components/heading/heading';
-import { AutoComplete } from '../../components/autoComplete/autoComplete';
 import { Button } from '../../components/buttons/buttons';
-import { sortingProjectByCategory, fetchAllProject } from '../../redux/project/actionCreator';
-// import CustomAlert from '../../components/alert';
+// import { ProjectFieldEnum, InputTypeEnum, SearchOperatorEnum } from '../../redux/mutation';
 
 const List = lazy(() => import('./overview/List'));
 
 function Project() {
-  const dispatch = useDispatch();
-  // const isLoading = useSelector((state) => state.projects.loading);
-  // const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [searchText, setSearchText] = useState('');
 
-  // const handleGetProject = useCallback(() => {
-  //   dispatch(fetchAllProject());
-  // }, [dispatch]);
-  const projects = useSelector((state) => state.projects.data);
+  const GET_ALL_PROJECTS = gql`
+    query allProjects(
+      $search: String
+      $sort: [ProjectSortTypeInput]
+      $filters: ProjectFilterTypeInput
+      $page: Int!
+      $pageSize: Int!
+    ) {
+      allProjects(search: $search, sort: $sort, filters: $filters, page: $page, pageSize: $pageSize) {
+        pageInfo {
+          totalCount
+          totalPages
+          hasNextPage
+          hasPrevPage
+          pageSize
+          currentPage
+        }
+        items {
+          id
+          updatedAt
+          createdAt
+          title
+          shortname
+          projectHash
+          sequenceInterval
+          description
+          countries {
+            name
+          }
+          contacts
+          duration
+          temporality
+          projectConfiguration {
+            value
+            description
+          }
+        }
+      }
+    }
+  `;
+
+  const { data, error, loading, refetch } = useQuery(GET_ALL_PROJECTS, {
+    variables: {
+      search: searchText,
+      // filters: {
+      //   filters: [
+      //     {
+      //       field: null,
+      //       value: null,
+      //     },
+      //   ],
+      // },
+      // filters: {
+      //   field: ProjectFieldEnum.title,
+      //   value: searchText,
+      //   valueType: InputTypeEnum.string,
+      //   operator: SearchOperatorEnum.contains,
+      // },
+      sort: [
+        { order: 'DESC', field: 'countries' },
+        { order: 'ASC', field: 'title' },
+        // Add more sorting configurations as needed
+      ],
+      pageSize: 10,
+      page: 1,
+    },
+  });
 
   useEffect(() => {
-    dispatch(fetchAllProject());
-  }, [dispatch]);
+    if (!error && !loading) {
+      setProjects(data.allProjects);
+    }
+    if (error) {
+      window.notify('error', error);
+    }
+  }, [data]);
 
-  const [searchText, setSearchText] = useState('');
-  // const refetch = useSelector((state) => state.projects.refetch);
-
+  const handleRefetch = () => {
+    refetch();
+  };
   const searchData = useSelector((state) => state.headerSearchData);
 
   const [state, setState] = useState({
@@ -44,18 +110,16 @@ function Project() {
   //   setShowErrorAlert(false);
   // };
 
-  const { notData, visible } = state;
-  const handleSearch = () => {
-    const newdata = searchData.filter((item) => item.title.toUpperCase().startsWith(searchText.toUpperCase()));
-    setState({
-      ...state,
-      notData: newdata,
-    });
+  const { visible } = state;
+
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
   };
 
-  const onSorting = (selectedItems) => {
-    dispatch(sortingProjectByCategory(selectedItems));
-  };
+  useEffect(() => {
+    handleRefetch();
+    refetch({ search: searchText });
+  }, [searchText]);
 
   const showModal = () => {
     setState({
@@ -70,39 +134,35 @@ function Project() {
       visible: false,
     });
   };
-  // const showDeleteModal = (id) => {
-  //   setState({
-  //     ...state,
-  //     visibledelete: true,
-  //     projectId: id,
-  //   });
-  // };
 
   const handleCreateProject = async () => {
     try {
-      // showDeleteModal(id);
-      dispatch(fetchAllProject());
+      handleRefetch();
       onCancel();
     } catch (errors) {
       onCancel();
     }
   };
 
-  // const onDeleteCancel = () => {
-  //   setState({
-  //     ...state,
-  //     visibledelete: false,
-  //   });
-  // };
+  const paginateData = async (current, pageSize) => {
+    refetch({ page: current, pageSize });
+  };
 
-  // const handleDeleteProject = async () => {
-  //   try {
-  //     dispatch(fetchAllProject());
-  //     onCancel();
-  //   } catch (errors) {
-  //     onCancel();
-  //   }
-  // };
+  const filterSort = async (pagination, filters, sorter) => {
+    const { column, columnKey, ...sortFields } = sorter;
+    const renamedSortFields = {
+      ...sortFields,
+      order: sortFields.order === 'descend' ? 'DESC' : 'ASC',
+    };
+    // const updatedFilters = filters?.title?.map((item) => {
+    //   return {
+    //     field: 'title',
+    //     value: item,
+    //   };
+    // });
+    // console.log({ updatedFilters });
+    refetch({ sort: renamedSortFields });
+  };
 
   return (
     <>
@@ -134,28 +194,15 @@ function Project() {
             <div className="flex items-center w-full mb-[25px] flex-wrap justify-between">
               <div className="flex items-center flex-wrap gap-[20px]  lg:justify-center">
                 <div className="min-3xl:[&>div.ant-select]:w-[350px] ssm:[&>div.ant-select]:w-full [&>div>div.ant-select-selector]:border-0">
-                  <AutoComplete
+                  <Input
                     value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    onSearch={handleSearch}
-                    dataSource={notData}
+                    onChange={handleSearch}
                     placeholder="Search projects"
-                    patterns
+                    className="bg-white px-5 border outline-none border-regular dark:border-primary shadow-none rounded-[100px] [&>input]:!bg-transparent dark:[&>input]:!bg-transparent h-[38px]"
+                    suffix={
+                      <SearchOutlined className="flex text-light dark:text-white87 [&>svg]:text-light dark:[&>svg]:text-white87" />
+                    }
                   />
-                </div>
-              </div>
-              <div>
-                <div className="flex flex-wrap items-center lg:justify-center gap-[20px]">
-                  <span className="text-body dark:text-white60">Sort By:</span>
-                  <Select
-                    onChange={onSorting}
-                    defaultValue="category"
-                    className="min-w-[260px] ltr:ml-[5px] rtl:mr-[5px] [&>div.ant-select-selector]:border-none [&>div>span.ant-select-selection-item]:text-body dark:[&>div>span.ant-select-selection-item]:text-white60 dark:text-white60 [&>span>span>svg]:text-body dark:[&>span>span>svg]:text-white60 "
-                  >
-                    <Select.Option value="category">Country</Select.Option>
-                    <Select.Option value="rate">Germany</Select.Option>
-                    <Select.Option value="popular">Mexico</Select.Option>
-                  </Select>
                 </div>
               </div>
             </div>
@@ -170,8 +217,14 @@ function Project() {
                 <Routes>
                   {/* <Route index element={<List projectsData={data.allProjects} />} />
                   <Route path="list" element={<List projectsData={data.allProjects} />} /> */}
-                  <Route index element={<List projectsData={projects} />} />
-                  <Route path="list" element={<List projectsData={projects} />} />
+                  <Route
+                    index
+                    element={<List projectsData={projects} filterSort={filterSort} paginateData={paginateData} />}
+                  />
+                  <Route
+                    path="list"
+                    element={<List projectsData={projects} filterSort={filterSort} paginateData={paginateData} />}
+                  />
                 </Routes>
               </Suspense>
             </div>
