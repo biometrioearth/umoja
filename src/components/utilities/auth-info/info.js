@@ -23,7 +23,6 @@ const AuthInfo = React.memo(() => {
     // Check if cookies have expired or user is not authenticated
 
     if (cookiesExpired) {
-      console.log('Expired');
       navigate('/login');
       // Redirect to login page
       dispatch(logOut(() => navigate('/login')));

@@ -51,7 +51,21 @@ function ProjectSamplingPoints() {
     }
   }, [data]);
 
-  const { data: deviceData, error: deviceError, loading: deviceLoading } = useQuery(GET_ALL_DEVICES);
+  const {
+    data: deviceData,
+    error: deviceError,
+    loading: deviceLoading,
+  } = useQuery(GET_ALL_DEVICES, {
+    variables: {
+      sort: [
+        { order: 'DESC', field: 'serial_number' },
+        { order: 'ASC', field: 'device_type' },
+        // Add more sorting configurations as needed
+      ],
+      pageSize: 10,
+      page: 1,
+    },
+  });
 
   useEffect(() => {
     if (!deviceError && !deviceLoading) {

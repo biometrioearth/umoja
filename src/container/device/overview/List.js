@@ -128,7 +128,7 @@ function DeviceLists(props) {
   );
 }
 DeviceLists.propTypes = {
-  devicesData: PropTypes.object,
+  devicesData: PropTypes.any,
   filterSort: PropTypes.func,
   paginateData: PropTypes.func,
 };
